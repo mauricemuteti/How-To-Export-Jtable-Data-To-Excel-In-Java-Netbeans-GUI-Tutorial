@@ -3,77 +3,72 @@ How To Export Jtable Data To Excel In Java Netbeans GUI Tutorial
 For More Info Visit - http://mauricemuteti.info/how-to-export-jtable-data-to-excel-in-java-netbeans-gui-tutorial/
 <pre>
 
-    public void exportDataToExcel() {
+           FileOutputStream excelFOU = null;
+        BufferedOutputStream excelBOU = null;
+        XSSFWorkbook excelJTableExporter = null;
 
-        //First Download Apache POI Library For Dealing with excel files.
-        //Then add the library to the current project
-        FileOutputStream excelFos = null;
-        XSSFWorkbook excelJTableExport = null;
-        BufferedOutputStream excelBos = null;
-        try {
+        //Choose Location For Saving Excel File
+        JFileChooser excelFileChooser = new JFileChooser("C:\\Users\\Authentic\\Desktop");
+//        Change Dilog Box Title
+        excelFileChooser.setDialogTitle("Save As");
+//        Onliny filter files with these extensions "xls", "xlsx", "xlsm"
+        FileNameExtensionFilter fnef = new FileNameExtensionFilter("EXCEL FILES", "xls", "xlsx", "xlsm");
+        excelFileChooser.setFileFilter(fnef);
+        int excelChooser = excelFileChooser.showSaveDialog(null);
 
-            //Choosing Saving Location
-            //Set default location to C:\Users\Authentic\Desktop or your preferred location
-            JFileChooser excelFileChooser = new JFileChooser("C:\\Users\\Authentic\\Desktop");
-            //Dialog box title
-            excelFileChooser.setDialogTitle("Save As ..");
-            //Filter only xls, xlsx, xlsm files
-            FileNameExtensionFilter fnef = new FileNameExtensionFilter("Files", "xls", "xlsx", "xlsm");
-            //Setting extension for selected file names
-            excelFileChooser.setFileFilter(fnef);
-            int chooser = excelFileChooser.showSaveDialog(null);
-            //Check if save button has been clicked
-            if (chooser == JFileChooser.APPROVE_OPTION) {
-                //If button is clicked execute this code
-                excelJTableExport = new XSSFWorkbook();
-                XSSFSheet excelSheet = excelJTableExport.createSheet("Jtable Export");
-                //Loop through the jtable columns and rows to get its values
+//        Check if save button is clicked
+        if (excelChooser == JFileChooser.APPROVE_OPTION) {
+            
+            try {
+                //Import excel poi libraries to netbeans
+                excelJTableExporter = new XSSFWorkbook();
+                XSSFSheet excelSheet = excelJTableExporter.createSheet("JTable Sheet");
+                //            Loop to get jtable columns and rows
                 for (int i = 0; i < model.getRowCount(); i++) {
                     XSSFRow excelRow = excelSheet.createRow(i);
                     for (int j = 0; j < model.getColumnCount(); j++) {
                         XSSFCell excelCell = excelRow.createCell(j);
 
-                        //Change the image column to output image path
-                        //Fourth column contains images
+                        //Now Get ImageNames From JLabel
+                        //get the last column
                         if (j == model.getColumnCount() - 1) {
                             JLabel excelJL = (JLabel) model.getValueAt(i, j);
-                            ImageIcon excelImageIcon = (ImageIcon) excelJL.getIcon();
-                            //Image Name Is Stored In ImageIcons Description first set it when saving image in the jtable cell and then retrieve it.
-                            excelImagePath = excelImageIcon.getDescription();
+                            ImageIcon excelIMageIcon = (ImageIcon) excelJL.getIcon();
+                            //Before retrieving the description of the image first set it...
+                            excelImagePath = excelIMageIcon.getDescription();
                         }
-
                         excelCell.setCellValue(model.getValueAt(i, j).toString());
+
+//                        Change the values of the fourth column to image paths
                         if (excelCell.getColumnIndex() == model.getColumnCount() - 1) {
                             excelCell.setCellValue(excelImagePath);
                         }
                     }
-                }
-                excelFos = new FileOutputStream(excelFileChooser.getSelectedFile() + ".xlsx");
-                excelBos = new BufferedOutputStream(excelFos);
-                excelJTableExport.write(excelBos);
-                JOptionPane.showMessageDialog(null, "Exported Successfully");
-            }
-
-        } catch (FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, ex);
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, ex);
-        } finally {
-            try {
-                if (excelFos != null) {
-                    excelFos.close();
-                }
-                if (excelBos != null) {
-                    excelBos.close();
-                }
-                if (excelJTableExport != null) {
-                    excelJTableExport.close();
-                }
+                }   //Append xlsx file extensions to selected files. To create unique file names
+                excelFOU = new FileOutputStream(excelFileChooser.getSelectedFile() + ".xlsx");
+                excelBOU = new BufferedOutputStream(excelFOU);
+                excelJTableExporter.write(excelBOU);
+                JOptionPane.showMessageDialog(null, "Exported Successfully !!!........");
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, ex);
+                ex.printStackTrace();
+            } finally {
+                try {
+                    if (excelBOU != null) {
+                        excelBOU.close();
+                    }
+                    if (excelFOU != null) {
+                        excelFOU.close();
+                    }
+                    if (excelJTableExporter != null) {
+                        excelJTableExporter.close();
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
+            
         }
-    } 
-}
 
 </pre>
