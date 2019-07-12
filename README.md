@@ -1,6 +1,7 @@
 # How-To-Export-Jtable-Data-To-Excel-In-Java-Netbeans-GUI-Tutorial
 How To Export Jtable Data To Excel In Java Netbeans GUI Tutorial
 For More Info Visit - http://mauricemuteti.info/how-to-export-jtable-data-to-excel-in-java-netbeans-gui-tutorial/
+Video - https://www.youtube.com/watch?v=NkDnVFAwfas
 <pre>
 
            FileOutputStream excelFOU = null;
